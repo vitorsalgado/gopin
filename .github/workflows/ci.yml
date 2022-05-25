@@ -22,29 +22,38 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.18
 
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.18
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+      - name: Get dependencies
+        run: |
+          make deps
 
-    - name: Get dependencies
-      run: |
-        make deps
+      - name: Lint
+        run: make lint
 
-    - name: Lint
-      run: make lint
+      - name: Test
+        run: make test
 
-    - name: Test
-      run: make test
+      - name: Build
+        run: |
+          make build
+          make build-docker-compose
 
-    - name: Build
-      run: |
-        make build
-        make build-docker-compose
+      - name: Coverage
+        run: make coverage
+      - name: Coverage Upload
+        uses: codecov/codecov-action@v3
+        timeout-minutes: 5
+        with:
+          verbose: true
+          files: ./coverage/coverage.out
+          fail_ci_if_error: false
 
   automerge:
     needs:

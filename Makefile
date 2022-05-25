@@ -26,8 +26,8 @@ test:
 .PHONY: coverage
 coverage:
 	mkdir -p coverage
-	go test -v ./... -coverprofile=coverage/c.out
-	go tool cover -html=coverage/c.out -o coverage/coverage.html
+	go test -v ./... -race -coverprofile=coverage/coverage.out -covermode=atomic
+	go tool cover -html=coverage/coverage.out -o coverage/coverage.html
 
 test-e2e:
 	chmod +x ./test/run.sh
