@@ -85,7 +85,7 @@ func TestItShouldReturnLocationHistoryForSession_whenAvailable(t *testing.T) {
 	var result []domain.Location
 	repo.On("HistoryFor", id).Return(data[:len(data)-1])
 
-	test.GetJSON(fmt.Sprintf("%s/api/v1/session_location_history/%v", ts.URL, id), &result)
+	test.GetJSON(fmt.Sprintf("%s/api/v1/location_history/%v", ts.URL, id), &result)
 
 	assert.Equal(t, 2, len(result))
 }
@@ -94,7 +94,7 @@ func TestItShouldReturn404_whenSessionHistoryIsEmpty(t *testing.T) {
 	var id = "79561481-fc11-419c-a9e8-e5a079b853c4"
 	repo.On("HistoryFor", id).Return([]domain.Location{})
 
-	resp, err := test.Get(fmt.Sprintf("%s/api/v1/session_location_history/%v", ts.URL, id))
+	resp, err := test.Get(fmt.Sprintf("%s/api/v1/location_history/%v", ts.URL, id))
 	panicif.Err(err)
 
 	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
@@ -104,7 +104,7 @@ func TestItShouldReturnBadRequest_whenIdIsNotUUID(t *testing.T) {
 	id := "test03"
 	repo.On("HistoryFor", id).Return([]domain.Location{})
 
-	resp, err := test.Get(fmt.Sprintf("%s/api/v1/session_location_history/%v", ts.URL, id))
+	resp, err := test.Get(fmt.Sprintf("%s/api/v1/location_history/%v", ts.URL, id))
 	panicif.Err(err)
 
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)

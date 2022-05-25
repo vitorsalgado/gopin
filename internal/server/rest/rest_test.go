@@ -2,7 +2,6 @@ package rest
 
 import (
 	"fmt"
-	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
@@ -10,7 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/vitorsalgado/go-location-management/internal/utils/config"
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
 	"github.com/vitorsalgado/go-location-management/internal/utils/test"
 )
 
@@ -43,10 +41,10 @@ func TestItShouldReturnPongWhenServeIsLive(t *testing.T) {
 	assert.Equal(t, "pong", result.Status)
 }
 
-func TestItShouldReturnSwaggerDocs(t *testing.T) {
-	resp, err := test.Get(fmt.Sprintf("%s/docs/", ts.URL))
-	panicif.Err(err)
-
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, "text/html; charset=utf-8", resp.Header.Get("Content-Type"))
-}
+//func TestItShouldReturnSwaggerDocs(t *testing.T) {
+//	resp, err := test.Get(fmt.Sprintf("%s/docs/", ts.URL))
+//	panicif.Err(err)
+//
+//	assert.Equal(t, http.StatusOK, resp.StatusCode)
+//	assert.Equal(t, "text/html; charset=utf-8", resp.Header.Get("Content-Type"))
+//}
