@@ -26,7 +26,9 @@ tmp/
 .idea
 
 # Project
-bin/
 .database/
 .logs/
+.terraform/
+
+bin/
 coverage/
