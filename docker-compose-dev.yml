@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   api_dev:
@@ -18,7 +18,7 @@ services:
 
   db_dev:
     image: mysql
-    command: [--default-authentication-plugin=mysql_native_password,--default-time-zone=+00:00]
+    command: [ --default-authentication-plugin=mysql_native_password,--default-time-zone=+00:00 ]
     container_name: database_dev
     environment:
       - TZ=UTC
@@ -27,7 +27,10 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./.database:/var/lib/mysql:rw
+      - db-data:/var/lib/mysql:rw
       - ./scripts/mysql:/docker-entrypoint-initdb.d:rw
     security_opt:
       - seccomp:unconfined
+
+volumes:
+  db-data:
