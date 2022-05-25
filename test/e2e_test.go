@@ -9,11 +9,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/vitorsalgado/go-location-management/internal/locations/domain"
-	"github.com/vitorsalgado/go-location-management/internal/locations/usecases/adding"
-	"github.com/vitorsalgado/go-location-management/internal/utils/config"
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
-	"github.com/vitorsalgado/go-location-management/internal/utils/test"
+	"github.com/vitorsalgado/gopin/internal/locations/domain"
+	"github.com/vitorsalgado/gopin/internal/locations/usecases/adding"
+	"github.com/vitorsalgado/gopin/internal/utils/config"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/utils/test"
 )
 
 var configurations *config.Config

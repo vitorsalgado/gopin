@@ -3,8 +3,8 @@ package rest
 import (
 	"net/http"
 
-	"github.com/vitorsalgado/go-location-management/internal/server/rest/router"
-	"github.com/vitorsalgado/go-location-management/internal/utils/config"
+	"github.com/vitorsalgado/gopin/internal/server/rest/router"
+	"github.com/vitorsalgado/gopin/internal/utils/config"
 )
 
 // Server setups an HTTP Server with basic configurations.

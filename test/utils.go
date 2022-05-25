@@ -7,8 +7,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/vitorsalgado/go-location-management/internal/utils/config"
-	"github.com/vitorsalgado/go-location-management/internal/utils/database"
+	"github.com/vitorsalgado/gopin/internal/utils/config"
+	"github.com/vitorsalgado/gopin/internal/utils/database"
 )
 
 func ConnectDb(d time.Duration) *sql.DB {

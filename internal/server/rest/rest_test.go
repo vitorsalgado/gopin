@@ -8,8 +8,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/vitorsalgado/go-location-management/internal/utils/config"
-	"github.com/vitorsalgado/go-location-management/internal/utils/test"
+	"github.com/vitorsalgado/gopin/internal/utils/config"
+	"github.com/vitorsalgado/gopin/internal/utils/test"
 )
 
 var ts *httptest.Server

@@ -1,7 +1,7 @@
 FROM golang:1.18 as build
 WORKDIR /app
 COPY go.mod go.sum Makefile ./
-RUN go mod download && make deps
+RUN make deps
 COPY . .
 RUN make build && mv api bin/api
 

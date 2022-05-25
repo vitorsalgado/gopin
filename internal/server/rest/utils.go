@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/vitorsalgado/go-location-management/internal/server/rest/middlewares"
-	"github.com/vitorsalgado/go-location-management/internal/server/rest/router"
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/server/rest/middlewares"
+	"github.com/vitorsalgado/gopin/internal/server/rest/router"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
 )
 
 // Headers and Content Types

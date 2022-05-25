@@ -1,13 +1,13 @@
 package locations
 
 import (
-	"github.com/vitorsalgado/go-location-management/internal/locations/usecases/listing"
+	"github.com/vitorsalgado/gopin/internal/locations/usecases/listing"
 
-	"github.com/vitorsalgado/go-location-management/internal/locations/domain"
-	"github.com/vitorsalgado/go-location-management/internal/locations/usecases/adding"
-	"github.com/vitorsalgado/go-location-management/internal/locations/usecases/current"
-	"github.com/vitorsalgado/go-location-management/internal/server/rest/router"
-	"github.com/vitorsalgado/go-location-management/internal/utils/worker"
+	"github.com/vitorsalgado/gopin/internal/locations/domain"
+	"github.com/vitorsalgado/gopin/internal/locations/usecases/adding"
+	"github.com/vitorsalgado/gopin/internal/locations/usecases/current"
+	"github.com/vitorsalgado/gopin/internal/server/rest/router"
+	"github.com/vitorsalgado/gopin/internal/utils/worker"
 )
 
 // RegisterRoutes location routes

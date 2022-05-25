@@ -1,7 +1,7 @@
 package current
 
 import (
-	"github.com/vitorsalgado/go-location-management/internal/locations/domain"
+	"github.com/vitorsalgado/gopin/internal/locations/domain"
 )
 
 type (

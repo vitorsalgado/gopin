@@ -41,6 +41,7 @@ build:
 	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/app ${API_MAIN}
 
 deps:
+	go mod download
 	go get -v -t -d ./...
 
 build-docker-compose:

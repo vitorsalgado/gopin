@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
 )
 
 // GetJSON is a utility method to make GET HTTP calls with JSON bodied response easier.

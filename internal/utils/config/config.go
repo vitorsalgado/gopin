@@ -6,7 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
 )
 
 // Config represent application configurations

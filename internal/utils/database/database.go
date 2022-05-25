@@ -6,8 +6,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/vitorsalgado/go-location-management/internal/utils/config"
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/utils/config"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
 )
 
 var db *sql.DB

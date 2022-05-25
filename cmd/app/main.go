@@ -8,13 +8,13 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/vitorsalgado/go-location-management/internal/locations"
-	"github.com/vitorsalgado/go-location-management/internal/server/rest"
-	"github.com/vitorsalgado/go-location-management/internal/server/rest/middlewares"
-	"github.com/vitorsalgado/go-location-management/internal/utils/config"
-	"github.com/vitorsalgado/go-location-management/internal/utils/database"
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
-	"github.com/vitorsalgado/go-location-management/internal/utils/worker"
+	"github.com/vitorsalgado/gopin/internal/locations"
+	"github.com/vitorsalgado/gopin/internal/server/rest"
+	"github.com/vitorsalgado/gopin/internal/server/rest/middlewares"
+	"github.com/vitorsalgado/gopin/internal/utils/config"
+	"github.com/vitorsalgado/gopin/internal/utils/database"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/utils/worker"
 )
 
 const (

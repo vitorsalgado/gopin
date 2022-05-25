@@ -1,4 +1,4 @@
-module github.com/vitorsalgado/go-location-management
+module github.com/vitorsalgado/gopin
 
 go 1.18
 

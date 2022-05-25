@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/vitorsalgado/go-location-management/internal/locations"
-	"github.com/vitorsalgado/go-location-management/internal/locations/domain"
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/locations"
+	"github.com/vitorsalgado/gopin/internal/locations/domain"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
 )
 
 const (

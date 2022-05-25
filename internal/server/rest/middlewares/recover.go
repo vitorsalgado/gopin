@@ -5,7 +5,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"net/http"
 
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
 )
 
 // ApiError is the default response model for all failed API calls.

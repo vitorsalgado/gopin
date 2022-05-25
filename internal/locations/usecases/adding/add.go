@@ -3,8 +3,8 @@ package adding
 import (
 	"time"
 
-	"github.com/vitorsalgado/go-location-management/internal/locations/domain"
-	"github.com/vitorsalgado/go-location-management/internal/utils/worker"
+	"github.com/vitorsalgado/gopin/internal/locations/domain"
+	"github.com/vitorsalgado/gopin/internal/utils/worker"
 )
 
 type (

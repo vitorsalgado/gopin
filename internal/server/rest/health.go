@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/vitorsalgado/go-location-management/internal/server/rest/router"
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/server/rest/router"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
 )
 
 // result represents health check response

@@ -11,12 +11,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/vitorsalgado/go-location-management/internal/locations/domain"
-	"github.com/vitorsalgado/go-location-management/internal/server/rest"
-	"github.com/vitorsalgado/go-location-management/internal/utils/config"
-	"github.com/vitorsalgado/go-location-management/internal/utils/panicif"
-	"github.com/vitorsalgado/go-location-management/internal/utils/test"
-	"github.com/vitorsalgado/go-location-management/internal/utils/worker"
+	"github.com/vitorsalgado/gopin/internal/locations/domain"
+	"github.com/vitorsalgado/gopin/internal/server/rest"
+	"github.com/vitorsalgado/gopin/internal/utils/config"
+	"github.com/vitorsalgado/gopin/internal/utils/panicif"
+	"github.com/vitorsalgado/gopin/internal/utils/test"
+	"github.com/vitorsalgado/gopin/internal/utils/worker"
 )
 
 var ts *httptest.Server

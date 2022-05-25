@@ -3,8 +3,8 @@ package listing
 import (
 	"net/http"
 
-	"github.com/vitorsalgado/go-location-management/internal/server/rest"
-	"github.com/vitorsalgado/go-location-management/internal/utils/validations/checks"
+	"github.com/vitorsalgado/gopin/internal/server/rest"
+	"github.com/vitorsalgado/gopin/internal/utils/validations/checks"
 )
 
 const ParamSessionUUID = "session_uuid"
