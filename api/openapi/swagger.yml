@@ -1,0 +1,205 @@
+openapi: 3.0.0
+
+info:
+  title: GoPin
+  description: Demonstration API that receives location updates
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local
+
+tags:
+  - name: health
+    description: Health
+  - name: locations
+    description: Locations
+
+paths:
+  /ping:
+    get:
+      tags:
+        - health
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+
+  /location:
+    post:
+      summary: Reports a new location
+      description: Used to insert a new location update into the database.
+      tags:
+        - locations
+      requestBody:
+        description: New location
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewLocation'
+      responses:
+        '200':
+          description: Success
+
+  /current__location/:user_uuid:
+    get:
+      summary: Get a current location
+      description: Used to retrieve the last position of a user.
+      tags:
+        - locations
+      parameters:
+        - in: path
+          name: user_uuid
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: User UUID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentLocation'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /session_location_history/:session_uuid:
+    get:
+      summary: Get the location history of a session
+      description: Used to get a list of all location updates sent during a session.
+      tags:
+        - locations
+      parameters:
+        - in: path
+          name: session_uuid
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Session UUID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentLocation'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    HealthCheck:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    NewLocation:
+      type: object
+      properties:
+        user_uuid:
+          type: string
+        session_uuid:
+          type: string
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+        precision:
+          type: number
+          format: float
+        reported_at:
+          type: string
+          format: date-time
+      required:
+        - user_uuid
+        - session_uuid
+        - lat
+        - lng
+        - precision
+        - reported_at
+
+    CurrentLocation:
+      type: object
+      properties:
+        session_uuid:
+          type: string
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+        precision:
+          type: number
+          format: float
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - session_uuid
+        - lat
+        - lng
+        - precision
+        - timestamp
+
+    SessionLocation:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+        precision:
+          type: number
+          format: float
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - lat
+        - lng
+        - precision
+        - timestamp

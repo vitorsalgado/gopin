@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+    environment:
+      - TZ=UTC
+      - MYSQL_CONNECTION_STRING=root:mysql123@tcp(db:3306)/go?parseTime=true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  db:
+    image: mysql
+    command: [--default-authentication-plugin=mysql_native_password,--default-time-zone=+00:00]
+    environment:
+      - TZ=UTC
+      - MYSQL_ROOT_PASSWORD=mysql123
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./.database:/var/lib/mysql:rw
+      - ./scripts/mysql:/docker-entrypoint-initdb.d:rw
+    security_opt:
+      - seccomp:unconfined
