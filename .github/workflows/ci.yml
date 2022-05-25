@@ -1,10 +1,20 @@
 name: ci
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - '[0-9]+.x'
+    tags:
+      - '*'
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
   pull_request:
-    branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
 
 jobs:
 
@@ -35,3 +45,15 @@ jobs:
       run: |
         make build
         make build-docker-compose
+
+  automerge:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3.1.7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
