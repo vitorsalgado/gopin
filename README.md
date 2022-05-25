@@ -9,8 +9,14 @@
         <br />
     </p>
     <div>
+      <a href="https://github.com/vitorsalgado/gopin/actions/workflows/ci.yml">
+        <img src="https://github.com/vitorsalgado/gopin/actions/workflows/ci.yml/badge.svg" alt="CI Status" />
+      </a>
       <a href="#">
-          <img src="https://img.shields.io/badge/go-1.18-blue" alt="Go 1.18" />
+        <img src="https://img.shields.io/badge/go-1.18-blue" alt="Go 1.18" />
+      </a>
+      <a href="https://codecov.io/gh/vitorsalgado/gopin">
+        <img src="https://codecov.io/gh/vitorsalgado/gopin/branch/main/graph/badge.svg?token=FFKD8C3000"/>
       </a>
       <a href="https://conventionalcommits.org">
         <img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg" alt="Conventional Commits"/>
