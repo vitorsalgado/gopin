@@ -3,25 +3,32 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"github.com/rs/zerolog/log"
+	"github.com/vitorsalgado/gopin/internal"
+	"github.com/vitorsalgado/gopin/internal/config"
+	"github.com/vitorsalgado/gopin/internal/core"
+	"github.com/vitorsalgado/gopin/internal/usecases"
+	"github.com/vitorsalgado/gopin/internal/util/http/middlewares"
+	"github.com/vitorsalgado/gopin/internal/util/observability"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/rs/zerolog"
 
-	"github.com/vitorsalgado/gopin/internal/locations"
-	"github.com/vitorsalgado/gopin/internal/server/rest"
-	"github.com/vitorsalgado/gopin/internal/server/rest/middlewares"
-	"github.com/vitorsalgado/gopin/internal/utils/config"
-	"github.com/vitorsalgado/gopin/internal/utils/database"
-	"github.com/vitorsalgado/gopin/internal/utils/panicif"
-	"github.com/vitorsalgado/gopin/internal/utils/worker"
+	"github.com/vitorsalgado/gopin/internal/util/db"
+	"github.com/vitorsalgado/gopin/internal/util/worker"
 )
 
 const (
 	applicationName = "GoPin"
 	// ANSI Shadow
 	banner = `
-
  ██████╗  ██████╗ ██████╗ ██╗███╗   ██╗
 ██╔════╝ ██╔═══██╗██╔══██╗██║████╗  ██║
 ██║  ███╗██║   ██║██████╔╝██║██╔██╗ ██║
@@ -37,21 +44,40 @@ func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
 	configurations := config.Load()
-	db := database.Connect(configurations)
-	server, router := rest.Server(configurations)
+	database := db.ConnectToMySQL(configurations)
+	server, router := gopin.Server(configurations)
+
+	fmt.Print(fmt.Sprintf(banner, applicationName))
+	fmt.Println(fmt.Sprintf("Server starting on Port: %v", configurations.Port))
+	fmt.Println(fmt.Sprintf("Max Workers: %v\n", configurations.MaxWorkers))
 
 	dispatcher := worker.NewDispatcher(configurations.MaxWorkers)
 	dispatcher.Run()
 
-	rest.RegisterRoutes(router)
-	locations.RegisterRoutes(router, dispatcher, locations.NewRepository(db))
-
+	observability.ConfigureHealthCheck(router)
+	usecases.RegisterLocationRoutes(router, dispatcher, core.NewRepository(database))
 	router.ApplyRoutesTo(server)
 
-	fmt.Print(fmt.Sprintf(banner, applicationName))
-	fmt.Println(fmt.Sprintf("Server starting on Port: %v", configurations.Port))
-	fmt.Println(fmt.Sprintf("Max Workers: %v", configurations.MaxWorkers))
-	fmt.Println("::")
+	ext := make(chan os.Signal, 1)
+	signal.Notify(ext, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	srv := http.Server{Addr: ":8080", Handler: middlewares.Recovery(server)}
 
-	panicif.Err(http.ListenAndServe(":8080", middlewares.Recovery(server)))
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			panic(err)
+		} else {
+			log.Info().Msg("application stopped gracefully")
+		}
+	}()
+
+	<-ext
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Panic().Err(err).Msgf("server shutdown failed. reason %s", err)
+	}
+
+	log.Info().Msg("server shutdown completed")
 }
