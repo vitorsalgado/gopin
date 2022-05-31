@@ -31,7 +31,7 @@ paths:
   /location:
     post:
       summary: Reports a new location
-      description: Used to insert a new location update into the database.
+      description: Used to insert a new location update into the db.
       tags:
         - locations
       requestBody:

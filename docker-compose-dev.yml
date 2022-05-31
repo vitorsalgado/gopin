@@ -14,7 +14,7 @@ services:
     depends_on:
       - db_dev
     volumes:
-      - ./:/app
+      - ./:/api
 
   db_dev:
     image: mysql

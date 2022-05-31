@@ -1,7 +1,7 @@
 <h1 id="gopin-top" align="center">GoPin</h1>
 
 <div align="center">
-    <a href="#"><img src="docs/assets/logo.png" width="120px" alt="Hive"></a>
+    <a href="#"><img src="logo.png" width="120px" alt="Hive"></a>
     <p align="center">
         Demonstration Location Management API
         <br />

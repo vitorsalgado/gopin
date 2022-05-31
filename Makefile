@@ -64,4 +64,9 @@ docs:
 
 .PHONY: swagger
 swagger:
-	@docker run -p 8081:8080 -e URL=/doc/swagger.yml -v $$PWD/api/openapi:/usr/share/nginx/html/doc swaggerapi/swagger-ui
+	@docker run -p 8081:8080 -e URL=/doc/swagger.yml -v $$PWD/docs/openapi:/usr/share/nginx/html/doc swaggerapi/swagger-ui
+
+prep:
+	@echo preparing swagger-ui
+	@tar -xf docs/openapi/swagger-ui.tar.gz
+	@cp ./docs/openapi/swagger-initializer.js docs/openapi/swagger-ui/swagger-initializer.js
