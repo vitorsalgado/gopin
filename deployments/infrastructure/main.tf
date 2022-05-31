@@ -11,9 +11,9 @@ terraform {
 }
 
 resource "heroku_app" "gopin" {
-  name = "gopin"
+  name   = "gopin"
   region = "us"
-  stack = "container"
+  stack  = "container"
 }
 
 resource "heroku_addon" "jawsdb" {

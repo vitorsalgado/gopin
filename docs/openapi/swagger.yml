@@ -45,7 +45,7 @@ paths:
         '200':
           description: Success
 
-  /current__location/:user_uuid:
+  /current_location/:user_uuid:
     get:
       summary: Get a current location
       description: Used to retrieve the last position of a user.

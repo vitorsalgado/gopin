@@ -1,24 +1,29 @@
-version: "3.9"
+version: '3.9'
 
 services:
-  api:
+  api_dev:
     build:
-      context: .
+      context: ../..
+      dockerfile: ../../Dockerfile.dev
+    container_name: api_dev
     environment:
       - TZ=UTC
-      - MYSQL_CONNECTION_STRING=root:mysql123@tcp(db:3306)/go?parseTime=true
+      - MYSQL_CONNECTION_STRING=root:mysql123@tcp(db_dev:3306)/go?parseTime=true
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - db_dev
+    volumes:
+      - ./:/api
 
-  db:
+  db_dev:
     image: mysql
     command: [ --default-authentication-plugin=mysql_native_password,--default-time-zone=+00:00 ]
-    privileged: true
+    container_name: database_dev
     environment:
       - TZ=UTC
       - MYSQL_ROOT_PASSWORD=mysql123
+    restart: always
     ports:
       - "3306:3306"
     volumes:

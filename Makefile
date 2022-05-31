@@ -1,7 +1,8 @@
-GOPIN_PROJECT := gopin
-GOPIN_REGISTRY := localhost:5000
-GOPIN_IMAGE := $(GOPIN_REGISTRY)/$(GOPIN_PROJECT)
-GOPIN_MAIN := cmd/app/main.go
+PROJECT := gopin
+REGISTRY := localhost:5000
+IMAGE := $(REGISTRY)/$(PROJECT)
+MAIN := cmd/app/main.go
+DC_ROOT := ./deployments/local
 
 .ONESHELL:
 .DEFAULT_GOAL := help
@@ -14,13 +15,13 @@ help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 up: ## run local environment with all service dependencies using with docker compose
-	@docker-compose -p $(GOPIN_PROJECT) up --build --force-recreate
+	@docker-compose -f $(DC_ROOT)/docker-compose.yml -p $(PROJECT) up --build --force-recreate
 
 down: ## tear down local docker compose environment
-	@docker-compose down
+	@docker-compose -f $(DC_ROOT)/docker-compose.yml down
 
 run: ## run application
-	@go run $(GOPIN_MAIN)
+	@go run $(MAIN)
 
 .PHONY: test
 test: ## run tests
@@ -51,22 +52,22 @@ check: vet ## check source code
 
 .PHONY: build
 build: ## build application
-	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/gopin $(GOPIN_MAIN)
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/gopin $(MAIN)
 
 deps: ## check dependencies
 	@go mod verify
 
 build-docker-compose: ## build docker compose
-	@docker-compose build
+	@docker-compose -f $(DC_ROOT)/docker-compose.yml build
 
 build-docker: ## build docker image
-	@docker build -t $(GOPIN_IMAGE) .
+	@docker build -t $(IMAGE) .
 
 dev: ## run local development environment with hot reload using docker compose
-	@docker-compose -f ./docker-compose-dev.yml -p $(GOPIN_PROJECT).dev up --build
+	@docker-compose -f $(DC_ROOT)/docker-compose-dev.yml -p $(PROJECT).dev up --build
 
 clean-dev: ## cleanup local development environment
-	@docker-compose -f ./docker-compose-dev.yml down --remove-orphans --rmi=all
+	@docker-compose -f $(DC_ROOT)/docker-compose-dev.yml down --remove-orphans --rmi=all
 
 .PHONY: swagger
 swagger:
@@ -81,6 +82,6 @@ install-staticcheck: ## download and install staticcheck tool locally
 	@echo "installing staticcheck locally"
 	@go install honnef.co/go/tools/cmd/staticcheck@latest
 
-prep: swagger install-staticcheck ## prepare local development  environment
+prep: swagger install-staticcheck ## prepare local development environment
 	@echo "preparing local tools"
 	@npm i

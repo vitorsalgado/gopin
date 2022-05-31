@@ -65,7 +65,7 @@ GH Action definition [here](.github/workflows/ci.yml).
 Docker is used for several tasks like, e2e tests, development environment, database.  
 The project is idealized to be as lightweight as possible. The final image is around **10mb**.  
 Check the main [Dockerfile](Dockerfile).  
-The [docker-compose-dev-yml](docker-compose-dev.yml) creates a development environment with the
+The [docker-compose-dev-yml](deployments/local/docker-compose-dev.yml) creates a development environment with the
 **app** with **Live Reload** and **MySQL**.
 
 ## Testing
