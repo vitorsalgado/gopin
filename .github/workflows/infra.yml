@@ -1,0 +1,33 @@
+name: infra
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'deployments/infrastructure'
+
+jobs:
+  build:
+    name: Infra
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Check
+        run: |
+          terraform -chdir=./deployments/infrastructure fmt -check
+          terraform -chdir=./deployments/infrastructure validate
+
+      - name: Plan
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP: ${{ secrets.HEROKU_APP }}
+        run: |
+          heroku container:login
+          terraform -chdir=./deployments/infrastructure plan
