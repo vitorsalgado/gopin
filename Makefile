@@ -1,7 +1,7 @@
-export SHELL := /bin/bash
-
 PROJECT := gopin
-API_MAIN := cmd/app/main.go
+REGISTRY := localhost:5000
+IMAGE := $(REGISTRY)/$(PROJECT)
+MAIN := cmd/app/main.go
 
 .ONESHELL:
 .DEFAULT_GOAL := help
@@ -10,63 +10,69 @@ API_MAIN := cmd/app/main.go
 help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-up:
+up: ## run local environment with all service dependencies using with docker compose
 	@docker-compose -p $(PROJECT) up --build --force-recreate
 
-down:
+down: ## tear down local docker compose environment
 	@docker-compose down
 
-run:
-	@go run ${API_MAIN}
+run: ## run application
+	@go run $(MAIN)
 
 .PHONY: test
-test:
-	@go test -v ./internal/... ./cmd/...
+test: ## run tests
+	@go test -v ./...
+
+test-e2e: ## run end-to-end tests
+	@chmod +x ./test/run.sh
+	./test/run.sh
+
+.PHONY: bench
+bench: ## run benchmarks
+	@go test -v ./... -bench=. -count 2 -run=^#
 
 .PHONY: coverage
-coverage:
+coverage: ## run tests and generate coverage report
 	@mkdir -p coverage
 	@go test -v ./... -race -coverprofile=coverage/coverage.out -covermode=atomic
 	@go tool cover -html=coverage/coverage.out -o coverage/coverage.html
 
-test-e2e:
-	@chmod +x ./test/run.sh
-	./test/run.sh
-
-lint:
+vet: ## check go code
 	@go vet ./...
 
+fmt: ## run gofmt in all project files
+	@go fmt ./...
+
+check: vet ## check source code
+	@staticcheck ./...
+
 .PHONY: build
-build:
-	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/gopin ${API_MAIN}
+build: ## build application
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/gopin $(MAIN)
 
-deps:
-	@go mod download
-	@go get -v -t -d ./...
+deps: ## check dependencies
+	@go mod verify
 
-build-docker-compose:
+build-docker-compose: ## build docker compose
 	@docker-compose build
 
-dev:
+build-docker: ## build docker image
+	@docker build -t $(IMAGE) .
+
+dev: ## run local development environment with hot reload using docker compose
 	@docker-compose -f ./docker-compose-dev.yml -p $(PROJECT).dev up --build
-dev-cleanup:
+
+clean-dev: ## cleanup local development environment
 	@docker-compose -f ./docker-compose-dev.yml down --remove-orphans --rmi=all
 
-install-nodemon:
-	@npm i nodemon -g
-nodemon:
-	@nodemon --exec go run cmd/app/main.go --signal SIGTERM
-
-.PHONY: docs
-docs:
-	@echo Navigate to: http://localhost:6060/
-	@godoc -http=:6060
-
 .PHONY: swagger
-swagger:
+swagger: ## run swagger documentation with docker
 	@docker run -p 8081:8080 -e URL=/doc/swagger.yml -v $$PWD/docs/openapi:/usr/share/nginx/html/doc swaggerapi/swagger-ui
 
-prep:
-	@echo preparing swagger-ui
+prep: ## prepare local development  environment
+	@echo "preparing swagger-ui"
 	@tar -xf docs/openapi/swagger-ui.tar.gz
 	@cp ./docs/openapi/swagger-initializer.js docs/openapi/swagger-ui/swagger-initializer.js
+
+	@echo "installing staticcheck locally"
+	@go install honnef.co/go/tools/cmd/staticcheck@latest
