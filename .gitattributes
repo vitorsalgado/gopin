@@ -1,0 +1,6 @@
+*.pb.html linguist-generated=true
+*.pb.go linguist-generated=true
+*.gen.go linguist-generated=true
+*.gen.yaml linguist-generated=true
+*.gen.json linguist-generated=true
+go.sum merge=union

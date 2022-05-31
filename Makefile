@@ -1,23 +1,26 @@
-PROJECT := gopin
-REGISTRY := localhost:5000
-IMAGE := $(REGISTRY)/$(PROJECT)
-MAIN := cmd/app/main.go
+GOPIN_PROJECT := gopin
+GOPIN_REGISTRY := localhost:5000
+GOPIN_IMAGE := $(GOPIN_REGISTRY)/$(GOPIN_PROJECT)
+GOPIN_MAIN := cmd/app/main.go
 
 .ONESHELL:
 .DEFAULT_GOAL := help
+
+# allow user specific optional overrides
+-include Makefile.overrides
 
 .PHONY: help
 help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 up: ## run local environment with all service dependencies using with docker compose
-	@docker-compose -p $(PROJECT) up --build --force-recreate
+	@docker-compose -p $(GOPIN_PROJECT) up --build --force-recreate
 
 down: ## tear down local docker compose environment
 	@docker-compose down
 
 run: ## run application
-	@go run $(MAIN)
+	@go run $(GOPIN_MAIN)
 
 .PHONY: test
 test: ## run tests
@@ -48,7 +51,7 @@ check: vet ## check source code
 
 .PHONY: build
 build: ## build application
-	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/gopin $(MAIN)
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/gopin $(GOPIN_MAIN)
 
 deps: ## check dependencies
 	@go mod verify
@@ -57,22 +60,27 @@ build-docker-compose: ## build docker compose
 	@docker-compose build
 
 build-docker: ## build docker image
-	@docker build -t $(IMAGE) .
+	@docker build -t $(GOPIN_IMAGE) .
 
 dev: ## run local development environment with hot reload using docker compose
-	@docker-compose -f ./docker-compose-dev.yml -p $(PROJECT).dev up --build
+	@docker-compose -f ./docker-compose-dev.yml -p $(GOPIN_PROJECT).dev up --build
 
 clean-dev: ## cleanup local development environment
 	@docker-compose -f ./docker-compose-dev.yml down --remove-orphans --rmi=all
 
 .PHONY: swagger
-swagger: ## run swagger documentation with docker
-	@docker run -p 8081:8080 -e URL=/doc/swagger.yml -v $$PWD/docs/openapi:/usr/share/nginx/html/doc swaggerapi/swagger-ui
-
-prep: ## prepare local development  environment
+swagger:
 	@echo "preparing swagger-ui"
 	@tar -xf docs/openapi/swagger-ui.tar.gz
 	@cp ./docs/openapi/swagger-initializer.js docs/openapi/swagger-ui/swagger-initializer.js
 
+swagger-docker: ## run swagger documentation with docker
+	@docker run -p 8081:8080 -e URL=/doc/swagger.yml -v $$PWD/docs/openapi:/usr/share/nginx/html/doc swaggerapi/swagger-ui
+
+install-staticcheck: ## download and install staticcheck tool locally
 	@echo "installing staticcheck locally"
 	@go install honnef.co/go/tools/cmd/staticcheck@latest
+
+prep: swagger install-staticcheck ## prepare local development  environment
+	@echo "preparing local tools"
+	@npm i

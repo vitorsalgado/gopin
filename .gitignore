@@ -32,3 +32,8 @@ tmp/
 
 bin/
 coverage/
+node_modules/
+
+Makefile.overrides
+
+package-lock.json
