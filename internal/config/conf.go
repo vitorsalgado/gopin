@@ -1,73 +1,32 @@
 package config
 
 import (
-	"os"
-	"strconv"
-
+	goenv "github.com/Netflix/go-env"
 	"github.com/joho/godotenv"
-
-	"github.com/vitorsalgado/gopin/internal/util/panicif"
+	"github.com/rs/zerolog/log"
 )
 
 // Config represent application configurations
 type Config struct {
-	Port                  string
-	SwaggerUiPath         string
-	MySQLConnectionString string
-	MySQLMaxOpenConns     int
-	MySQLMaxIdleConns     int
-	MaxWorkers            int
+	Debug                 bool   `env:"DEBUG,default=false"`
+	Port                  string `env:"PORT,default=:8080"`
+	SwaggerUiPath         string `env:"SWAGGER_UI_PATH,default=./docs/openapi/swagger-ui"`
+	MySQLConnectionString string `env:"MYSQL_CONNECTION_STRING,default=root:mysql123@tcp(127.0.0.1:3306)/go?parseTime=true"`
+	MySQLMaxOpenConns     int    `env:"MYSQL_MAX_OPEN_CONNS,default=10"`
+	MySQLMaxIdleConns     int    `env:"MYSQL_MAX_IDLE_CONNS,default=10"`
+	MaxWorkers            int    `env:"MAX_WORKERS,default=10"`
 }
-
-// List of environment variables
-const (
-	EnvPort                  = "PORT"
-	EnvSwaggerUIPath         = "SWAGGER_UI_PATH"
-	EnvMySQLConnectionString = "MYSQL_CONNECTION_STRING"
-	EnvMySQLMaxOpenConns     = "MYSQL_MAX_OPEN_CONNS"
-	EnvMySQLMaxIdleConns     = "MySQL_MAX_IDLE_CONNS"
-	EnvMaxWorkers            = "MAX_WORKERS"
-)
-
-// Default values for when environment variable is no set
-const (
-	DefPort                  = ":8080"
-	DefSwaggerUiPath         = "./docs/openapi/swagger-ui"
-	DefMySQLConnectionString = "root:mysql123@tcp(127.0.0.1:3306)/go?parseTime=true"
-	DefMySQLMaxOpenConns     = 10
-	DefMySQLMaxIdleConns     = 10
-	DefMaxWorker             = 10
-)
 
 // Load loads configuration using environment variables
 func Load() *Config {
-	// For now, we ignore the error if there's no .strEnv file
 	_ = godotenv.Load()
 
-	return &Config{
-		Port:                  strEnv(EnvPort, DefPort),
-		SwaggerUiPath:         strEnv(EnvSwaggerUIPath, DefSwaggerUiPath),
-		MySQLConnectionString: strEnv(EnvMySQLConnectionString, DefMySQLConnectionString),
-		MySQLMaxOpenConns:     intEnv(EnvMySQLMaxOpenConns, DefMySQLMaxOpenConns),
-		MySQLMaxIdleConns:     intEnv(EnvMySQLMaxIdleConns, DefMySQLMaxIdleConns),
-		MaxWorkers:            intEnv(EnvMaxWorkers, DefMaxWorker),
-	}
-}
+	var config Config
+	_, err := goenv.UnmarshalFromEnviron(&config)
 
-func strEnv(k string, def string) string {
-	if v := os.Getenv(k); v == "" {
-		return def
-	} else {
-		return v
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to load environment variables into struct")
 	}
-}
 
-func intEnv(k string, def int) int {
-	if v := os.Getenv(k); v == "" {
-		return def
-	} else {
-		c, err := strconv.Atoi(v)
-		panicif.Err(err)
-		return c
-	}
+	return &config
 }

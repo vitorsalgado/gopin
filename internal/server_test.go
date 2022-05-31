@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/vitorsalgado/gopin/internal/config"
 	"github.com/vitorsalgado/gopin/internal/util/observability"
+	"github.com/vitorsalgado/gopin/internal/util/panicif"
+	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
@@ -18,7 +20,7 @@ var ts *httptest.Server
 func TestMain(m *testing.M) {
 	// Setup and teardown
 	var conf config.Config
-	conf.SwaggerUiPath = "../../../api/swagger-ui"
+	conf.SwaggerUiPath = "../docs/openapi/swagger-ui"
 
 	srv, r := Server(&conf)
 	observability.ConfigureHealthCheck(r)
@@ -42,10 +44,10 @@ func TestItShouldReturnPongWhenServeIsLive(t *testing.T) {
 	assert.Equal(t, "pong", result.Status)
 }
 
-//func TestItShouldReturnSwaggerDocs(t *testing.T) {
-//	resp, err := test.Get(fmt.Sprintf("%s/docs/", ts.URL))
-//	panicif.Err(err)
-//
-//	assert.Equal(t, http.StatusOK, resp.StatusCode)
-//	assert.Equal(t, "text/html; charset=utf-8", resp.Header.Get("Content-Type"))
-//}
+func TestItShouldReturnSwaggerDocs(t *testing.T) {
+	resp, err := test.Get(fmt.Sprintf("%s/docs/", ts.URL))
+	panicif.Err(err)
+
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "text/html; charset=utf-8", resp.Header.Get("Content-Type"))
+}

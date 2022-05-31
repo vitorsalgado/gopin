@@ -13,7 +13,9 @@ func Server(configurations *config.Config) (*http.ServeMux, *router.RoutingMiddl
 	swagger := http.FileServer(http.Dir(configurations.SwaggerUiPath))
 
 	mux.Handle("/docs/", http.StripPrefix("/docs/", swagger))
-	mux.HandleFunc("/docs", func(w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, "index.html") })
+	mux.HandleFunc("/docs", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/docs/", http.StatusTemporaryRedirect)
+	})
 	mux.HandleFunc("/docs/swagger.yml", func(w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, "./docs/openapi/swagger.yml") })
 
 	r := router.Init(mux)

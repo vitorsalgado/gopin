@@ -9,18 +9,12 @@ import (
 func TestConfig(t *testing.T) {
 	config := Load()
 
-	t.Run("it should load with default values when there's no .strEnv file", func(t *testing.T) {
-		assert.NotNil(t, config.Port)
-		assert.Equal(t, DefPort, config.Port)
-		assert.NotNil(t, config.SwaggerUiPath)
-		assert.Equal(t, DefSwaggerUiPath, config.SwaggerUiPath)
+	t.Run("it should load with default values when there's no .env file", func(t *testing.T) {
+		assert.Equal(t, ":8080", config.Port)
+		assert.Equal(t, "./docs/openapi/swagger-ui", config.SwaggerUiPath)
 		assert.NotNil(t, config.MySQLConnectionString)
-		assert.Equal(t, DefMySQLConnectionString, config.MySQLConnectionString)
-		assert.NotNil(t, config.MySQLMaxOpenConns)
-		assert.Equal(t, DefMySQLMaxOpenConns, config.MySQLMaxOpenConns)
-		assert.NotNil(t, config.MySQLMaxIdleConns)
-		assert.Equal(t, DefMySQLMaxIdleConns, config.MySQLMaxIdleConns)
-		assert.NotNil(t, config.MaxWorkers)
-		assert.Equal(t, DefMaxWorker, config.MaxWorkers)
+		assert.Equal(t, 10, config.MySQLMaxOpenConns)
+		assert.Equal(t, 10, config.MySQLMaxIdleConns)
+		assert.Equal(t, 10, config.MaxWorkers)
 	})
 }
