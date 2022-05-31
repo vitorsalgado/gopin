@@ -1,10 +1,12 @@
 FROM golang:1.18 as build
 WORKDIR /app
 COPY go.mod go.sum Makefile ./
-RUN make deps
+RUN make download
 COPY . .
-RUN make build
-RUN mv api bin/api
+RUN make build && \
+    make swagger && \
+    mkdir -p bin/docs && \
+    mv docs/openapi bin/docs/openapi
 
 # ---
 

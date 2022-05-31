@@ -14,7 +14,7 @@ services:
     depends_on:
       - db_dev
     volumes:
-      - ./:/api
+      - ../../:/docs/openapi
 
   db_dev:
     image: mysql
@@ -28,7 +28,7 @@ services:
       - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql:rw
-      - ./scripts/mysql:/docker-entrypoint-initdb.d:rw
+      - ../../scripts/mysql:/docker-entrypoint-initdb.d:rw
     security_opt:
       - seccomp:unconfined
 

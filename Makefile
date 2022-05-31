@@ -57,6 +57,9 @@ build: ## build application
 deps: ## check dependencies
 	@go mod verify
 
+download: ## download dependencies
+	@go mod download
+
 build-docker-compose: ## build docker compose
 	@docker-compose -f $(DC_ROOT)/docker-compose.yml build
 
