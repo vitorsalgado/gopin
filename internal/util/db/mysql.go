@@ -6,18 +6,18 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-
-	"github.com/vitorsalgado/gopin/internal/util/panicif"
 )
 
 // ConnectToMySQL opens a connection to a MySQL instance and returns a db object
-func ConnectToMySQL(config *gopin.Config) *sql.DB {
+func ConnectToMySQL(config *gopin.Config) (*sql.DB, error) {
 	db, err := sql.Open("mysql", config.MySQLConnectionString)
-	panicif.Err(err)
+	if err != nil {
+		return nil, err
+	}
 
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(config.MySQLMaxOpenConns)
 	db.SetMaxIdleConns(config.MySQLMaxIdleConns)
 
-	return db
+	return db, nil
 }

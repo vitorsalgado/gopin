@@ -26,6 +26,7 @@ func Load() *Config {
 
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load environment variables into struct")
+		return nil
 	}
 
 	return &config

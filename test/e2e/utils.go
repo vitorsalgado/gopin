@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/vitorsalgado/gopin/internal/config"
 	"log"
 	"time"
 
@@ -11,8 +12,8 @@ import (
 )
 
 func ConnectDb(d time.Duration) *sql.DB {
-	conf := internal.Load()
-	db := db.ConnectToMySQL(conf)
+	conf := config.Load()
+	database := db.ConnectToMySQL(conf)
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	ticker := time.NewTicker(1 * time.Second)
 	timeout := time.After(d)
@@ -31,12 +32,12 @@ func ConnectDb(d time.Duration) *sql.DB {
 		case <-ticker.C:
 			fmt.Println("Trying to connect ...")
 
-			if db == nil {
-				db = db.Connect(conf)
+			if database == nil {
+				database = db.ConnectToMySQL(conf)
 			} else {
-				if err := db.PingContext(ctx); err == nil {
+				if err := database.PingContext(ctx); err == nil {
 					fmt.Println("Successfully connected with MySQL.")
-					return db
+					return database
 				}
 			}
 

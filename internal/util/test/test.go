@@ -5,46 +5,51 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/vitorsalgado/gopin/internal/util/panicif"
 )
 
 // GetJSON is a utility method to make GET HTTP calls with JSON bodied response easier.
 // It returns the original http.Response but with Body already closed
-func GetJSON(url string, result interface{}) *http.Response {
+func GetJSON(url string, result interface{}) (*http.Response, error) {
 	resp, err := http.Get(url)
-	panicif.Err(err)
+	if err != nil {
+		return nil, err
+	}
 
-	defer func() {
-		err = resp.Body.Close()
-		panicif.Err(err)
-	}()
+	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	err = json.Unmarshal(body, &result)
-	panicif.Err(err)
 
-	return resp
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
-func PostJSON(url string, content interface{}, result *interface{}) *http.Response {
+func PostJSON(url string, content interface{}, result *interface{}) (*http.Response, error) {
 	data, err := json.Marshal(content)
-	panicif.Err(err)
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(data))
-	panicif.Err(err)
+	if err != nil {
+		return nil, err
+	}
 
-	defer func() {
-		err = resp.Body.Close()
-		panicif.Err(err)
-	}()
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(data))
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
 
 	if result != nil {
 		body, _ := ioutil.ReadAll(resp.Body)
+
 		err = json.Unmarshal(body, &result)
-		panicif.Err(err)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	return resp
+	return resp, nil
 }
 
 // Get simple makes a GET HTTP call without additional behavior

@@ -9,8 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/vitorsalgado/gopin/internal"
 	"github.com/vitorsalgado/gopin/internal/config"
-	"github.com/vitorsalgado/gopin/internal/core"
-	"github.com/vitorsalgado/gopin/internal/usecases"
+	"github.com/vitorsalgado/gopin/internal/domain"
 	"github.com/vitorsalgado/gopin/internal/util/http/middlewares"
 	"github.com/vitorsalgado/gopin/internal/util/observability"
 	"net/http"
@@ -55,7 +54,7 @@ func main() {
 	dispatcher.Run()
 
 	observability.ConfigureHealthCheck(router)
-	usecases.RegisterLocationRoutes(router, dispatcher, core.NewRepository(database))
+	gopin.Routes(router, dispatcher, domain.NewLocationRepository(database))
 	router.ApplyRoutesTo(server)
 
 	ext := make(chan os.Signal, 1)

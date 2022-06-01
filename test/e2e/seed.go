@@ -3,10 +3,8 @@ package e2e
 import (
 	"database/sql"
 	"fmt"
-	"github.com/vitorsalgado/gopin/internal/core"
+	"github.com/vitorsalgado/gopin/internal/domain"
 	"time"
-
-	"github.com/vitorsalgado/gopin/internal/util/panicif"
 )
 
 const (
@@ -26,11 +24,11 @@ func (s *Seed) seed() {
 
 	fmt.Println("Seeding Database ...")
 
-	repository := core.NewRepository(s.db)
+	repository := domain.NewLocationRepository(s.db)
 
 	// User 1
 	// --
-	repository.ReportNew(core.Location{
+	repository.ReportNew(domain.Location{
 		UserID:     u1,
 		SessionID:  session1,
 		Latitude:   -33.22325847832756,
@@ -38,7 +36,7 @@ func (s *Seed) seed() {
 		Precision:  1000,
 		ReportedAt: time.Now(),
 	})
-	repository.ReportNew(core.Location{
+	repository.ReportNew(domain.Location{
 		UserID:     u1,
 		SessionID:  session2,
 		Latitude:   -30.22325847832756,
@@ -46,7 +44,7 @@ func (s *Seed) seed() {
 		Precision:  1250,
 		ReportedAt: time.Now().Add(-5 * time.Minute),
 	})
-	repository.ReportNew(core.Location{
+	repository.ReportNew(domain.Location{
 		UserID:     u1,
 		SessionID:  session2,
 		Latitude:   -25.22325847832756,
@@ -57,7 +55,7 @@ func (s *Seed) seed() {
 
 	// User 2
 	// ..
-	repository.ReportNew(core.Location{
+	repository.ReportNew(domain.Location{
 		UserID:     u2,
 		SessionID:  session3,
 		Latitude:   -10.22325847832756,
@@ -65,7 +63,7 @@ func (s *Seed) seed() {
 		Precision:  50,
 		ReportedAt: time.Now().Add(-15 * time.Minute),
 	})
-	repository.ReportNew(core.Location{
+	repository.ReportNew(domain.Location{
 		UserID:     u2,
 		SessionID:  session3,
 		Latitude:   -15.22325847832756,
@@ -81,13 +79,16 @@ func (s *Seed) cleanDb() {
 	fmt.Println("Cleaning Database ...")
 
 	stmt, err := s.db.Prepare("DELETE FROM locations")
-	panicif.Err(err)
+	if err != nil {
+		panic(err)
+	}
 
-	defer func() { panicif.Err(stmt.Close()) }()
+	defer stmt.Close()
 
 	_, err = stmt.Exec()
-
-	panicif.Err(err)
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println("Cleaning Complete ...")
 }

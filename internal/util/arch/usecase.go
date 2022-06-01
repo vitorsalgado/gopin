@@ -1,5 +1,7 @@
 package arch
 
-type UseCase[A any, R, any] interface {
-	Execute(args A) (*R, error)
+import "net/http"
+
+type Handler interface {
+	Execute(w http.ResponseWriter, r *http.Request)
 }

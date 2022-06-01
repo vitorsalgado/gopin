@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"github.com/rs/zerolog/log"
 	"net/http"
-
-	"github.com/vitorsalgado/gopin/internal/util/panicif"
 )
 
 // ApiError is the default response model for all failed API calls.
@@ -42,8 +40,7 @@ func Recovery(next http.Handler) http.Handler {
 					Interface("recover", recovery).
 					Msg(msg)
 
-				panicif.Err(
-					json.NewEncoder(w).Encode(&ApiError{Message: msg}))
+				_ = json.NewEncoder(w).Encode(&ApiError{Message: msg})
 			}
 
 		}()

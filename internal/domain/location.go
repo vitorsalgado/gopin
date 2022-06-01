@@ -1,4 +1,4 @@
-package core
+package domain
 
 import (
 	"time"
@@ -16,8 +16,8 @@ type (
 
 	// LocationRepository represents data access operations for Location core
 	LocationRepository interface {
-		ReportNew(location Location)
-		GetCurrent(id string) *Location
-		HistoryForSession(sessionID string) []Location
+		ReportNew(location Location) error
+		Current(id string) (*Location, error)
+		HistoryForSession(sessionID string) (*[]Location, error)
 	}
 )

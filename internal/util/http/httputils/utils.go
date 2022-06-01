@@ -6,13 +6,11 @@ import (
 	"github.com/vitorsalgado/gopin/internal/util/http/middlewares"
 	"github.com/vitorsalgado/gopin/internal/util/router"
 	"net/http"
-
-	"github.com/vitorsalgado/gopin/internal/util/panicif"
 )
 
 // Headers and Content Types
 const (
-	HeaderContentType          = "Content-Type"
+	HeaderContentType          = "content-type"
 	ContentTypeApplicationJSON = "application/json"
 )
 
@@ -26,27 +24,39 @@ func Params(r *http.Request) map[string]string {
 }
 
 // OkJSON is a helper to return an OK (200) with a JSON body
-func OkJSON(w http.ResponseWriter, model interface{}) {
+func OkJSON[T interface{}](w http.ResponseWriter, msg *T) {
 	w.Header().Set(HeaderContentType, ContentTypeApplicationJSON)
 
-	panicif.Err(
-		json.NewEncoder(w).Encode(&model))
+	respond(w, &msg)
 }
 
 // BadRequest creates a Bad Request (400) response
-func BadRequest(w http.ResponseWriter, format string, a ...interface{}) {
+func BadRequest(w http.ResponseWriter, msg string, a ...interface{}) {
 	w.Header().Set(HeaderContentType, ContentTypeApplicationJSON)
 	w.WriteHeader(http.StatusBadRequest)
 
-	panicif.Err(
-		json.NewEncoder(w).Encode(&middlewares.ApiError{Message: fmt.Sprintf(format, a...)}))
+	respond(w, &middlewares.ApiError{Message: fmt.Sprintf(msg, a...)})
 }
 
 // NotFound creates a Not Found (404) response
-func NotFound(w http.ResponseWriter, format string, a ...interface{}) {
+func NotFound(w http.ResponseWriter, msg string, a ...interface{}) {
 	w.Header().Set(HeaderContentType, ContentTypeApplicationJSON)
 	w.WriteHeader(http.StatusNotFound)
 
-	panicif.Err(
-		json.NewEncoder(w).Encode(&middlewares.ApiError{Message: fmt.Sprintf(format, a...)}))
+	respond(w, &middlewares.ApiError{Message: fmt.Sprintf(msg, a...)})
+}
+
+func Err(w http.ResponseWriter, err error) {
+	w.Header().Set(HeaderContentType, ContentTypeApplicationJSON)
+	w.WriteHeader(http.StatusNotFound)
+
+	_ = json.NewEncoder(w).Encode(&middlewares.ApiError{Message: err.Error()})
+}
+
+func respond[M any](w http.ResponseWriter, model *M) {
+	err := json.NewEncoder(w).Encode(model)
+
+	if err != nil {
+		Err(w, err)
+	}
 }

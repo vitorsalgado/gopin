@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/vitorsalgado/gopin/internal/config"
 	"github.com/vitorsalgado/gopin/internal/util/observability"
-	"github.com/vitorsalgado/gopin/internal/util/panicif"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -46,8 +45,8 @@ func TestItShouldReturnPongWhenServeIsLive(t *testing.T) {
 
 func TestItShouldReturnSwaggerDocs(t *testing.T) {
 	resp, err := test.Get(fmt.Sprintf("%s/docs/", ts.URL))
-	panicif.Err(err)
 
+	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "text/html; charset=utf-8", resp.Header.Get("Content-Type"))
 }
