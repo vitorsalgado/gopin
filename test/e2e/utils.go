@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/vitorsalgado/gopin/internal/config"
+	"github.com/vitorsalgado/gopin/internal/util/config"
 	"log"
 	"time"
 
@@ -13,14 +13,18 @@ import (
 
 func ConnectDb(d time.Duration) *sql.DB {
 	conf := config.Load()
-	database := db.ConnectToMySQL(conf)
+	database, err := db.ConnectToMySQL(conf)
+	if err != nil {
+		log.Printf("error connecting to the database. will try to reconnect. reason %s", err.Error())
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	ticker := time.NewTicker(1 * time.Second)
 	timeout := time.After(d)
 
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println(fmt.Sprintf("Something bad happened ... %v", r))
+			fmt.Println(fmt.Sprintf("something bad happened ... %v", r))
 		}
 	}()
 
@@ -30,19 +34,20 @@ func ConnectDb(d time.Duration) *sql.DB {
 	for {
 		select {
 		case <-ticker.C:
-			fmt.Println("Trying to connect ...")
+			fmt.Println("trying to connect ...")
 
 			if database == nil {
-				database = db.ConnectToMySQL(conf)
+				database, err = db.ConnectToMySQL(conf)
+				log.Println(err)
 			} else {
 				if err := database.PingContext(ctx); err == nil {
-					fmt.Println("Successfully connected with MySQL.")
+					fmt.Println("successfully connected with MySQL.")
 					return database
 				}
 			}
 
 		case <-timeout:
-			log.Fatal("Unable to establish connection with MySQL instance. Exiting ...")
+			log.Fatal("unable to establish connection with MySQL instance. Exiting ...")
 			return nil
 		}
 

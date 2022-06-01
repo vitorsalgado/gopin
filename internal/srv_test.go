@@ -2,7 +2,7 @@ package gopin
 
 import (
 	"fmt"
-	"github.com/vitorsalgado/gopin/internal/config"
+	"github.com/vitorsalgado/gopin/internal/util/config"
 	"github.com/vitorsalgado/gopin/internal/util/observability"
 	"net/http"
 	"net/http/httptest"
@@ -37,9 +37,10 @@ func TestMain(m *testing.M) {
 
 func TestItShouldReturnPongWhenServeIsLive(t *testing.T) {
 	var result observability.Result
-	response := test.GetJSON(fmt.Sprintf("%s/api/v1/ping", ts.URL), &result)
+	res, err := test.GetJSON(fmt.Sprintf("%s/api/v1/ping", ts.URL), &result)
 
-	assert.Equal(t, 200, response.StatusCode)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
 	assert.Equal(t, "pong", result.Status)
 }
 

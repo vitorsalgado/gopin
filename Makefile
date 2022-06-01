@@ -2,7 +2,7 @@ PROJECT := gopin
 REGISTRY := localhost:5000
 IMAGE := $(REGISTRY)/$(PROJECT)
 MAIN := cmd/app/main.go
-DC_ROOT := ./deployments/local
+GOPIN_DOCKER_COMPOSE_ROOT := ./deployments/local
 
 .ONESHELL:
 .DEFAULT_GOAL := help
@@ -10,26 +10,30 @@ DC_ROOT := ./deployments/local
 # allow user specific optional overrides
 -include Makefile.overrides
 
+export
+
 .PHONY: help
 help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 up: ## run local environment with all service dependencies using with docker compose
-	@docker-compose -f $(DC_ROOT)/docker-compose.yml -p $(PROJECT) up --build --force-recreate
+	@docker-compose -f $(GOPIN_DOCKER_COMPOSE_ROOT)/docker-compose.yml -p $(PROJECT) up --build --force-recreate
 
 down: ## tear down local docker compose environment
-	@docker-compose -f $(DC_ROOT)/docker-compose.yml down
+	@docker-compose -f $(GOPIN_DOCKER_COMPOSE_ROOT)/docker-compose.yml down
 
 run: ## run application
 	@go run $(MAIN)
 
 .PHONY: test
-test: ## run tests
-	@go test -v ./...
+test: ## run unit tests
+	@go test -v ./internal/... ./cmd/...
 
 test-e2e: ## run end-to-end tests
-	@chmod +x ./test/run.sh
-	./test/run.sh
+	@chmod +x ./test/e2e/run.sh
+	./test/e2e/run.sh
+
+test-all: test test-e2e ## run all tests
 
 .PHONY: bench
 bench: ## run benchmarks
@@ -61,16 +65,16 @@ download: ## download dependencies
 	@go mod download
 
 build-docker-compose: ## build docker compose
-	@docker-compose -f $(DC_ROOT)/docker-compose.yml build
+	@docker-compose -f $(GOPIN_DOCKER_COMPOSE_ROOT)/docker-compose.yml build
 
 build-docker: ## build docker image
 	@docker build -t $(IMAGE) .
 
 dev: ## run local development environment with hot reload using docker compose
-	@docker-compose -f $(DC_ROOT)/docker-compose-dev.yml -p $(PROJECT).dev up --build
+	@docker-compose -f $(GOPIN_DOCKER_COMPOSE_ROOT)/docker-compose-dev.yml -p $(PROJECT).dev up --build
 
 clean-dev: ## cleanup local development environment
-	@docker-compose -f $(DC_ROOT)/docker-compose-dev.yml down --remove-orphans --rmi=all
+	@docker-compose -f $(GOPIN_DOCKER_COMPOSE_ROOT)/docker-compose-dev.yml down --remove-orphans --rmi=all
 
 .PHONY: swagger
 swagger:

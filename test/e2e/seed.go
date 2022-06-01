@@ -8,9 +8,8 @@ import (
 )
 
 const (
-	u1 = "79561481-fc11-419c-a9e8-e5a079b853c1"
-	u2 = "79561481-fc11-419c-a9e8-e5a079b853c2"
-
+	u1       = "79561481-fc11-419c-a9e8-e5a079b853c1"
+	u2       = "79561481-fc11-419c-a9e8-e5a079b853c2"
 	session1 = "daff4b9f-24e2-478d-8b42-6d3f59a08b31"
 	session2 = "daff4b9f-24e2-478d-8b42-6d3f59a08b32"
 	session3 = "daff4b9f-24e2-478d-8b42-6d3f59a08b33"
@@ -21,14 +20,13 @@ type Seed struct {
 }
 
 func (s *Seed) seed() {
-
-	fmt.Println("Seeding Database ...")
+	fmt.Println("seeding Database ...")
 
 	repository := domain.NewLocationRepository(s.db)
 
 	// User 1
 	// --
-	repository.ReportNew(domain.Location{
+	_ = repository.ReportNew(domain.Location{
 		UserID:     u1,
 		SessionID:  session1,
 		Latitude:   -33.22325847832756,
@@ -36,7 +34,7 @@ func (s *Seed) seed() {
 		Precision:  1000,
 		ReportedAt: time.Now(),
 	})
-	repository.ReportNew(domain.Location{
+	_ = repository.ReportNew(domain.Location{
 		UserID:     u1,
 		SessionID:  session2,
 		Latitude:   -30.22325847832756,
@@ -44,7 +42,7 @@ func (s *Seed) seed() {
 		Precision:  1250,
 		ReportedAt: time.Now().Add(-5 * time.Minute),
 	})
-	repository.ReportNew(domain.Location{
+	_ = repository.ReportNew(domain.Location{
 		UserID:     u1,
 		SessionID:  session2,
 		Latitude:   -25.22325847832756,
@@ -55,7 +53,7 @@ func (s *Seed) seed() {
 
 	// User 2
 	// ..
-	repository.ReportNew(domain.Location{
+	_ = repository.ReportNew(domain.Location{
 		UserID:     u2,
 		SessionID:  session3,
 		Latitude:   -10.22325847832756,
@@ -63,7 +61,7 @@ func (s *Seed) seed() {
 		Precision:  50,
 		ReportedAt: time.Now().Add(-15 * time.Minute),
 	})
-	repository.ReportNew(domain.Location{
+	_ = repository.ReportNew(domain.Location{
 		UserID:     u2,
 		SessionID:  session3,
 		Latitude:   -15.22325847832756,
@@ -72,11 +70,11 @@ func (s *Seed) seed() {
 		ReportedAt: time.Now().Add(-30 * time.Minute),
 	})
 
-	fmt.Println("Seeding Complete")
+	fmt.Println("seeding complete")
 }
 
 func (s *Seed) cleanDb() {
-	fmt.Println("Cleaning Database ...")
+	fmt.Println("cleaning database ...")
 
 	stmt, err := s.db.Prepare("DELETE FROM locations")
 	if err != nil {
@@ -90,5 +88,5 @@ func (s *Seed) cleanDb() {
 		panic(err)
 	}
 
-	fmt.Println("Cleaning Complete ...")
+	fmt.Println("cleaning complete ...")
 }

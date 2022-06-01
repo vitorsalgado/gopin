@@ -3,10 +3,10 @@ WORKDIR /app
 COPY go.mod go.sum Makefile ./
 RUN make download
 COPY . .
-RUN make build && \
-    make swagger && \
+RUN make swagger && \
     mkdir -p bin/docs && \
     mv docs/openapi bin/docs/openapi
+RUN make build
 
 # ---
 

@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	gopin "github.com/vitorsalgado/gopin/internal/config"
+	gopin "github.com/vitorsalgado/gopin/internal/util/config"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"

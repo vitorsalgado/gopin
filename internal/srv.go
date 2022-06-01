@@ -1,7 +1,7 @@
 package gopin
 
 import (
-	"github.com/vitorsalgado/gopin/internal/config"
+	"github.com/vitorsalgado/gopin/internal/util/config"
 	"github.com/vitorsalgado/gopin/internal/util/router"
 	"net/http"
 )

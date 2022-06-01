@@ -1,11 +1,12 @@
-package domain
+package integration
 
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/vitorsalgado/gopin/internal"
-	"github.com/vitorsalgado/gopin/internal/config"
+	"github.com/vitorsalgado/gopin/internal/domain"
+	"github.com/vitorsalgado/gopin/internal/util/config"
 	"github.com/vitorsalgado/gopin/internal/util/test"
 	"github.com/vitorsalgado/gopin/internal/util/worker"
 	"net/http"
@@ -17,7 +18,7 @@ import (
 
 var ts *httptest.Server
 var repo = FakeRepository{}
-var data = []Location{
+var data = []domain.Location{
 	{Latitude: 1, Longitude: 1, Precision: 100, ReportedAt: time.Now()},
 	{Latitude: 2, Longitude: 2, Precision: 200, ReportedAt: time.Now()},
 	{Latitude: 10, Longitude: 12, Precision: 100, ReportedAt: time.Now()},
@@ -45,8 +46,8 @@ func TestMain(m *testing.M) {
 
 func TestItShouldReturnTheCurrentLocation(t *testing.T) {
 	var id = "79561481-fc11-419c-a9e8-e5a079b853c1"
-	var result Location
-	repo.On("Current", id).Return(&Location{SessionID: "1000", Latitude: 100, Longitude: 150, Precision: 1500, ReportedAt: time.Now()})
+	var result domain.Location
+	repo.On("Current", id).Return(&domain.Location{SessionID: "1000", Latitude: 100, Longitude: 150, Precision: 1500, ReportedAt: time.Now()})
 
 	resp, err := test.GetJSON(fmt.Sprintf("%s/api/v1/current_location/%v", ts.URL, id), &result)
 
@@ -58,7 +59,7 @@ func TestItShouldReturnTheCurrentLocation(t *testing.T) {
 
 func TestItShouldReturnBadRequest_whenParameterIsNotValidUUID(t *testing.T) {
 	var id = "test01"
-	var result Location
+	var result domain.Location
 
 	resp, err := test.GetJSON(fmt.Sprintf("%s/api/v1/current_location/%v", ts.URL, id), &result)
 
@@ -68,8 +69,8 @@ func TestItShouldReturnBadRequest_whenParameterIsNotValidUUID(t *testing.T) {
 
 func TestItShouldReturnNotFound_whenUnableToRetrieveCurrentLocation(t *testing.T) {
 	var id = "79561481-fc11-419c-a9e8-e5a079b853c2"
-	var result Location
-	a := &Location{}
+	var result domain.Location
+	a := &domain.Location{}
 	a = nil
 	repo.On("Current", id).Return(a)
 
@@ -81,7 +82,7 @@ func TestItShouldReturnNotFound_whenUnableToRetrieveCurrentLocation(t *testing.T
 
 func TestItShouldReturnLocationHistoryForSession_whenAvailable(t *testing.T) {
 	var id = "79561481-fc11-419c-a9e8-e5a079b853c3"
-	var result []Location
+	var result []domain.Location
 	repo.On("HistoryForSession", id).Return(data[:len(data)-1])
 
 	_, err := test.GetJSON(fmt.Sprintf("%s/api/v1/location_history/%v", ts.URL, id), &result)
@@ -92,7 +93,7 @@ func TestItShouldReturnLocationHistoryForSession_whenAvailable(t *testing.T) {
 
 func TestItShouldReturn404_whenSessionHistoryIsEmpty(t *testing.T) {
 	var id = "79561481-fc11-419c-a9e8-e5a079b853c4"
-	repo.On("HistoryForSession", id).Return([]Location{})
+	repo.On("HistoryForSession", id).Return([]domain.Location{})
 
 	resp, err := test.Get(fmt.Sprintf("%s/api/v1/location_history/%v", ts.URL, id))
 
@@ -102,7 +103,7 @@ func TestItShouldReturn404_whenSessionHistoryIsEmpty(t *testing.T) {
 
 func TestItShouldReturnBadRequest_whenIdIsNotUUID(t *testing.T) {
 	id := "test03"
-	repo.On("HistoryForSession", id).Return([]Location{})
+	repo.On("HistoryForSession", id).Return([]domain.Location{})
 
 	resp, err := test.Get(fmt.Sprintf("%s/api/v1/location_history/%v", ts.URL, id))
 
@@ -116,16 +117,16 @@ type FakeRepository struct {
 	mock.Mock
 }
 
-func (m *FakeRepository) ReportNew(location Location) error {
+func (m *FakeRepository) ReportNew(location domain.Location) error {
 	return m.Called(location).Get(0).(error)
 }
 
-func (m *FakeRepository) Current(id string) (*Location, error) {
+func (m *FakeRepository) Current(id string) (*domain.Location, error) {
 	args := m.Called(id)
-	return args.Get(0).(*Location), args.Get(1).(error)
+	return args.Get(0).(*domain.Location), args.Get(1).(error)
 }
 
-func (m *FakeRepository) HistoryForSession(sessionID string) (*[]Location, error) {
+func (m *FakeRepository) HistoryForSession(sessionID string) (*[]domain.Location, error) {
 	args := m.Called(sessionID)
-	return args.Get(0).(*[]Location), args.Get(1).(error)
+	return args.Get(0).(*[]domain.Location), args.Get(1).(error)
 }

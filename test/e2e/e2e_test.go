@@ -2,9 +2,9 @@ package e2e
 
 import (
 	"fmt"
-	"github.com/vitorsalgado/gopin/internal/config"
 	"github.com/vitorsalgado/gopin/internal/domain"
 	"github.com/vitorsalgado/gopin/internal/handlers"
+	"github.com/vitorsalgado/gopin/internal/util/config"
 	"net/http"
 	"os"
 	"testing"

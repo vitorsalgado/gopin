@@ -7,9 +7,6 @@ import (
 	"github.com/vitorsalgado/gopin/internal/util/worker"
 )
 
-type LocationHandler struct {
-}
-
 // Routes register application HTTP route handlers
 func Routes(
 	r *router.RoutingMiddleware, dispatcher *worker.Dispatcher, repository domain.LocationRepository,
@@ -19,7 +16,7 @@ func Routes(
 		Register(r)
 
 	router.POST("api/v1/location").
-		HandlerFunc(handlers.NewUpdateLocation(repository, dispatcher).Execute).
+		HandlerFunc(handlers.NewReportLocationHandler(repository, dispatcher).Execute).
 		Register(r)
 
 	router.GET("api/v1/location_history/:session_uuid").

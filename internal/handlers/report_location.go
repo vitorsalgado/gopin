@@ -34,8 +34,10 @@ type (
 	}
 )
 
-// NewUpdateLocation creates new location update use case instance
-func NewUpdateLocation(repository domain.LocationRepository, dispatcher *worker.Dispatcher) arch.Handler {
+// NewReportLocationHandler creates new location update use case instance
+func NewReportLocationHandler(
+	repository domain.LocationRepository, dispatcher *worker.Dispatcher,
+) arch.Handler {
 	return &ReportLocationHandler{repository, dispatcher}
 }
 

@@ -1,0 +1,14 @@
+name: "CodeQL Config"
+
+queries:
+  - uses: security-and-quality
+
+paths:
+  - cmd
+  - internal
+paths-ignore:
+  - node_modules
+  - coverage
+  - deployments
+  - scripts
+  - docs
