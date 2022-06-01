@@ -79,8 +79,8 @@ clean-dev: ## cleanup local development environment
 .PHONY: swagger
 swagger:
 	@echo "preparing swagger-ui"
-	@tar -xf docs/openapi/swagger-ui.tar.gz
-	@cp ./docs/openapi/swagger-initializer.js docs/openapi/swagger-ui/swagger-initializer.js
+	@tar -xvf docs/openapi/swagger-ui.tar.gz
+	@cp ./docs/openapi/swagger-initializer.js ./docs/openapi/swagger-ui/swagger-initializer.js
 
 swagger-docker: ## run swagger documentation with docker
 	@docker run -p 8081:8080 -e URL=/doc/swagger.yml -v $$PWD/docs/openapi:/usr/share/nginx/html/doc swaggerapi/swagger-ui
