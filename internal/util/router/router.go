@@ -7,10 +7,12 @@ import (
 	"strings"
 )
 
+type contextKey int
+
 const (
-	backSlash        = "/"
-	pathParamPrefix  = ":"
-	ParamsContextKey = "path_params"
+	backSlash                   = "/"
+	pathParamPrefix             = ":"
+	ParamsContextKey contextKey = iota
 )
 
 type (
@@ -30,7 +32,6 @@ type (
 	RouteBuilder struct {
 		path    string
 		method  string
-		pattern *regexp.Regexp
 		handler http.Handler
 	}
 )

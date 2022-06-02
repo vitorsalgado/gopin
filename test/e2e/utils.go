@@ -24,7 +24,7 @@ func ConnectDb(d time.Duration) *sql.DB {
 
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println(fmt.Sprintf("something bad happened ... %v", r))
+			fmt.Printf("something bad happened ... %v\n", r)
 		}
 	}()
 

@@ -46,9 +46,9 @@ func main() {
 	database, _ := db.ConnectToMySQL(configurations)
 	server, router := gopin.Server(configurations)
 
-	fmt.Print(fmt.Sprintf(banner, applicationName))
-	fmt.Println(fmt.Sprintf("Server starting on Port: %v", configurations.Port))
-	fmt.Println(fmt.Sprintf("Max Workers: %v\n", configurations.MaxWorkers))
+	fmt.Printf(banner, applicationName)
+	fmt.Printf("Server starting on Port: %v\n", configurations.Port)
+	fmt.Printf("Max Workers: %v\n\n", configurations.MaxWorkers)
 
 	dispatcher := worker.NewDispatcher(configurations.MaxWorkers)
 	dispatcher.Run()

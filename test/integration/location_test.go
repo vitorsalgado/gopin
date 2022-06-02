@@ -70,9 +70,7 @@ func TestItShouldReturnBadRequest_whenParameterIsNotValidUUID(t *testing.T) {
 func TestItShouldReturnNotFound_whenUnableToRetrieveCurrentLocation(t *testing.T) {
 	var id = "79561481-fc11-419c-a9e8-e5a079b853c2"
 	var result domain.Location
-	a := &domain.Location{}
-	a = nil
-	repo.On("Current", id).Return(a)
+	repo.On("Current", id).Return(nil)
 
 	resp, err := test.GetJSON(fmt.Sprintf("%s/api/v1/current_location/%v", ts.URL, id), &result)
 
